@@ -76,20 +76,45 @@ Congratulations, your unikernel is up-and-running! Press CTRL + C to stop it.
 
 ## Documentation
 
+### 🚀 Getting Started
+* **[Architecture Overview](Documentation/ArchitectureOverview.md)** - Understand OSv and Capstan architecture
+* **[Complete Workflow Guide](Documentation/ComprehensiveWorkflow.md)** - Zero to running Python application
 * [Step-by-step Capstan Installation Guide](Documentation/Installation.md)
-* [Capstanfile](Documentation/Capstanfile.md)
+
+### 📦 Image and Package Management
+* **[Image Management Guide](Documentation/ImageManagement.md)** - Pulling, building, and reusing images
+* [Packages Repository](Documentation/Repository.md) - Repository sources and configuration
 * [Guide to Build Apps from Packages](Documentation/ApplicationManagement.md)
-* [Running My First Application Inside Unikernel](Documentation/WalkthroughNodeJS.md)
+
+### 🐍 Python Development
+* **[Complete Python Guide](Documentation/PythonComplete.md)** - Comprehensive Python 3.x documentation
+* [Python Runtime](Documentation/RuntimePython.md) - Python runtime configuration
+
+### 🔧 Advanced Configuration
+* **[Multi-Application Scenarios](Documentation/MultiApplicationScenarios.md)** - Multi-ELF and multi-job deployments
+* **[Schema Reference](Documentation/SchemaReference.md)** - Complete configuration file reference
+* [Capstanfile](Documentation/Capstanfile.md) - Docker-like image building
 * [Configuration Files](Documentation/ConfigurationFiles.md)
-    * [Native Runtime](Documentation/RuntimeNative.md)
-    * [Java Runtime](Documentation/RuntimeJava.md)
-    * [Node.js Runtime](Documentation/RuntimeNode.md)
-    * [Python Runtime](Documentation/RuntimePython.md)
+
+### 🏃 Runtime Documentation
+* [Native Runtime](Documentation/RuntimeNative.md)
+* [Java Runtime](Documentation/RuntimeJava.md)
+* [Node.js Runtime](Documentation/RuntimeNode.md)
+* [Python Runtime](Documentation/RuntimePython.md)
+
+### 📚 Additional Resources
+* [Running My First Application Inside Unikernel](Documentation/WalkthroughNodeJS.md)
 * [.capstanignore](Documentation/Capstanignore.md)
 * [Attaching Volumes](Documentation/Volumes.md)
-* [Packages Repository](Documentation/Repository.md)
 * [CLI Reference](Documentation/generated/CLI.md)
 * [OSv Filesystem](Documentation/OsvFilesystem.md)
+
+### 📖 Quick Navigation
+- **New to OSv/Capstan?** Start with [Architecture Overview](Documentation/ArchitectureOverview.md)
+- **Want to run Python?** Follow the [Complete Workflow Guide](Documentation/ComprehensiveWorkflow.md)
+- **Need to pull images?** Check [Image Management Guide](Documentation/ImageManagement.md)
+- **Building complex apps?** See [Multi-Application Scenarios](Documentation/MultiApplicationScenarios.md)
+- **Configuration reference?** Use [Schema Reference](Documentation/SchemaReference.md)
 
 ## License
 Capstan is distributed under the 3-clause BSD license.

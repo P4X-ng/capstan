@@ -1,92 +1,291 @@
 # Runtime `python`
 This document describes how to write a valid `meta/run.yaml` configuration file
-for running **Python** applications.
+for running **Python** applications on OSv.
 
-# Newer `native` method
-Require python:
+## Modern Python 3.x (Recommended)
+
+**⚠️ Important**: Python 2.7 is deprecated and no longer supported. All new projects should use Python 3.x.
+
+### Required Package
 ```yaml
+# meta/package.yaml
 require:
-        - osv.python3x
+  - osv.python3x  # Python 3.8.10 (latest supported)
 ```
 
-And set `bootcmd` to `python3`:
+### Basic Configuration
 ```yaml
 # meta/run.yaml
 runtime: native
 
-config_set: 
-   default:
-      bootcmd: python3
+config_set:
+  default:
+    bootcmd: python3 /app/main.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      PYTHONUNBUFFERED: "1"
 ```
 
-# Deprecated `python` method
-Note that you needn't require Python MPM package manually since Capstan will require following package automatically:
-```
-- python-2.7
-```
-
-The following configuration runs an interactive Python interpreter using the python runtime:
+### Interactive Python Shell
 ```yaml
 # meta/run.yaml
-
-runtime: python
+runtime: native
 
 config_set:
-  interpreter:
-    shell: true
+  shell:
+    bootcmd: python3 -i
+    env:
+      PYTHONPATH: /app:/app/lib
 ```
 
-Example:
-
+**Example**:
 ```bash
-$ capstan package compose demo
-$ capstan run demo --boot interpreter
-Command line will be set based on --boot parameter
-Created instance: demo
-Setting cmdline: runscript /run/interpreter
-OSv v0.24-448-g829bf76
+$ capstan package compose my-python-app --pull-missing
+$ capstan run my-python-app --boot shell
+Created instance: my-python-app
+Setting cmdline: python3 -i
+OSv v0.54.0
 eth0: 192.168.122.15
-Python 2.7.13+ (heads/2.7:883520a, Aug 17 2017, 08:15:22)
-[GCC 4.8.4] on linux2
+Python 3.8.10 (default, Nov 14 2022, 12:59:47)
+[GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-## Python script
-Following configuration can be used to run Python script inside OSv:
+## Python Application Examples
 
+### Simple Python Script
+```python
+# main.py
+#!/usr/bin/env python3
+import sys
+import os
+
+def main():
+    print("Hello from OSv!")
+    print(f"Python version: {sys.version}")
+    print(f"Arguments: {sys.argv[1:]}")
+    print(f"Environment: {dict(os.environ)}")
+
+if __name__ == '__main__':
+    main()
+```
+
+**Configuration**:
 ```yaml
 # meta/run.yaml
+runtime: native
 
+config_set:
+  default:
+    bootcmd: python3 /app/main.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      
+  with-args:
+    bootcmd: python3 /app/main.py arg1 arg2
+    env:
+      PYTHONPATH: /app:/app/lib
+```
+
+### Web Application (Flask)
+```python
+# web_app.py
+#!/usr/bin/env python3
+from flask import Flask, jsonify
+import os
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return jsonify({
+        "message": "Hello from OSv + Python 3!",
+        "python_version": os.sys.version,
+        "environment": dict(os.environ)
+    })
+
+@app.route('/health')
+def health():
+    return jsonify({"status": "healthy"})
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=False)
+```
+
+**Configuration**:
+```yaml
+# meta/run.yaml
+runtime: native
+
+config_set:
+  web-server:
+    bootcmd: python3 /app/web_app.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      PORT: "8080"
+      FLASK_ENV: production
+      
+  debug:
+    bootcmd: python3 /app/web_app.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      PORT: "8080"
+      FLASK_ENV: development
+      DEBUG: "true"
+
+config_set_default: web-server
+```
+
+**Usage**:
+```bash
+$ capstan package compose flask-app --pull-missing
+$ capstan run flask-app --boot web-server -f 8080:8080
+# Test: curl http://localhost:8080/
+```
+
+### Multiple Configuration Example
+```yaml
+# meta/run.yaml - Complete example
+runtime: native
+
+config_set:
+  web-server:
+    bootcmd: python3 /app/server.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      PORT: "8080"
+      MODE: "server"
+      
+  worker:
+    bootcmd: python3 /app/worker.py
+    env:
+      PYTHONPATH: /app:/app/lib
+      MODE: "worker"
+      
+  migrate:
+    bootcmd: python3 /app/manage.py migrate
+    env:
+      PYTHONPATH: /app:/app/lib
+      MODE: "migrate"
+      
+  test:
+    bootcmd: python3 -m pytest /app/tests/ -v
+    env:
+      PYTHONPATH: /app:/app/lib:/app/tests
+      TESTING: "true"
+      
+  shell:
+    bootcmd: python3 -i
+    env:
+      PYTHONPATH: /app:/app/lib
+
+config_set_default: web-server
+```
+
+## Legacy Python 2.7 (Deprecated)
+
+**⚠️ Warning**: Python 2.7 support is deprecated and should not be used for new projects.
+
+### Legacy Configuration (Not Recommended)
+```yaml
+# meta/package.yaml - DEPRECATED
+require:
+  - python-2.7  # Deprecated package
+
+# meta/run.yaml - DEPRECATED
 runtime: python
 
 config_set:
-  hello:
-    main: /script.py
+  legacy-app:
+    main: /app/script.py
     args:
-      - Johnny
+      - arg1
+      - arg2
 ```
-Note that /script.py script mentioned in the snippet above is a simple script that we've
-implemented for the sake of demo. It prints python arguments to the console:
 
+## Migration from Python 2.7 to Python 3.x
+
+If you have existing Python 2.7 applications, migrate them using this guide:
+
+### 1. Update Package Dependencies
+```yaml
+# OLD (Python 2.7)
+require:
+  - python-2.7
+
+# NEW (Python 3.x)
+require:
+  - osv.python3x
+```
+
+### 2. Update Runtime Configuration
+```yaml
+# OLD (Python 2.7)
+runtime: python
+config_set:
+  default:
+    main: /app/script.py
+
+# NEW (Python 3.x)
+runtime: native
+config_set:
+  default:
+    bootcmd: python3 /app/script.py
+    env:
+      PYTHONPATH: /app:/app/lib
+```
+
+### 3. Update Python Code
 ```python
-import sys
+# OLD (Python 2.7)
+print 'Hello World'
+import ConfigParser
 
-print 'Hello:'
-for el in sys.argv[1:]:
-  print '- %s' % el
+# NEW (Python 3.x)
+print('Hello World')
+import configparser
 ```
 
-Example:
+## Best Practices
 
-```bash
-$ capstan package compose demo
-$ capstan run demo --boot hello
-Command line will be set based on --boot parameter
-Created instance: demo
-Setting cmdline: runscript /run/hello
-OSv v0.24-448-g829bf76
-eth0: 192.168.122.15
-Hello:
-- Johnny
+### 1. Always Use Python 3.x
+```yaml
+require:
+  - osv.python3x  # Latest supported Python 3.x
 ```
+
+### 2. Use Native Runtime
+```yaml
+runtime: native  # More flexible than legacy python runtime
+```
+
+### 3. Set PYTHONPATH
+```yaml
+env:
+  PYTHONPATH: /app:/app/lib  # Ensure modules can be found
+```
+
+### 4. Use Unbuffered Output
+```yaml
+env:
+  PYTHONUNBUFFERED: "1"  # Immediate stdout/stderr output
+```
+
+### 5. Environment-Specific Configurations
+```yaml
+config_set:
+  development:
+    bootcmd: python3 -u /app/main.py
+    env:
+      DEBUG: "true"
+      
+  production:
+    bootcmd: python3 -O /app/main.py
+    env:
+      DEBUG: "false"
+      PYTHONOPTIMIZE: "2"
+```
+
+For more comprehensive Python documentation, see [Python Complete Guide](PythonComplete.md).

@@ -76,20 +76,34 @@ Congratulations, your unikernel is up-and-running! Press CTRL + C to stop it.
 
 ## Documentation
 
+### Getting Started
+* **[Getting Started Guide](Documentation/GettingStarted.md)** - Comprehensive introduction to Capstan and OSv
 * [Step-by-step Capstan Installation Guide](Documentation/Installation.md)
-* [Capstanfile](Documentation/Capstanfile.md)
-* [Guide to Build Apps from Packages](Documentation/ApplicationManagement.md)
 * [Running My First Application Inside Unikernel](Documentation/WalkthroughNodeJS.md)
+
+### Core Concepts
+* **[Image and Package Management](Documentation/ImageManagement.md)** - Understanding images, packages, and repositories
+* [Capstanfile](Documentation/Capstanfile.md)
 * [Configuration Files](Documentation/ConfigurationFiles.md)
-    * [Native Runtime](Documentation/RuntimeNative.md)
-    * [Java Runtime](Documentation/RuntimeJava.md)
-    * [Node.js Runtime](Documentation/RuntimeNode.md)
-    * [Python Runtime](Documentation/RuntimePython.md)
-* [.capstanignore](Documentation/Capstanignore.md)
-* [Attaching Volumes](Documentation/Volumes.md)
+* [Guide to Build Apps from Packages](Documentation/ApplicationManagement.md)
+
+### Language Runtimes
+* **[Python Workflow Guide](Documentation/PythonWorkflow.md)** - Complete Python 3 development guide
+* [Python Runtime](Documentation/RuntimePython.md)
+* [Java Runtime](Documentation/RuntimeJava.md)
+* [Node.js Runtime](Documentation/RuntimeNode.md)
+* [Native Runtime](Documentation/RuntimeNative.md)
+
+### Advanced Topics
+* **[Running Multiple Jobs](Documentation/MultipleJobs.md)** - Multi-ELF and multi-job applications
 * [Packages Repository](Documentation/Repository.md)
-* [CLI Reference](Documentation/generated/CLI.md)
+* [Attaching Volumes](Documentation/Volumes.md)
+* [.capstanignore](Documentation/Capstanignore.md)
 * [OSv Filesystem](Documentation/OsvFilesystem.md)
+
+### Reference
+* [CLI Reference](Documentation/generated/CLI.md)
+* [Under The Hood](Documentation/UnderTheHood.md)
 
 ## License
 Capstan is distributed under the 3-clause BSD license.
